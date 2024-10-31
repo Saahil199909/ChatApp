@@ -1,0 +1,6 @@
+apis
+
+1) user should be able to see all users after logging_in by default in their workspace, and a green logo if a user is loggedin
+2) create a socket where users can send private chats to each other 
+3) when user sends a message to someone, then the reciever should be notified about that by showing 1 in navbar of the user and in textbox as well by previewing the message
+4) 
