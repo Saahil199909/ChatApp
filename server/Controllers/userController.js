@@ -13,6 +13,7 @@ const createToken = (_id) => {
 const userRegister = async (req, res) => {
     try{
         const { name, email, password } = req.body;
+        console.log(name, email, password)
 
         let user = await userModel.findOne({email});
 
