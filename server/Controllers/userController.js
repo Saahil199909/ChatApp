@@ -78,7 +78,7 @@ const findUser = async (req, res) => {
 
 const findAllUsers = async (req, res) => {
     try{
-        const users = await userModel.find()        
+        const users = await userModel.find().select('name email')  
         return res.status(200).json(users)
     }catch(error){
         console.log(error)

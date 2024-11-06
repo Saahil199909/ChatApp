@@ -15,3 +15,19 @@ export const postApi = async(apiUrl, body) => {
         return {data: null, error: message}
     }
 }
+
+
+
+export const getApi = async(apiUrl) => {
+    try{
+        const response = await axios.get(apiUrl, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        return {data: response.data, error: null};
+    }catch(error){
+        const message = error.response?.data?.message || error.response?.data || error.message || 'An error occurred';
+        return {data: null, error: message}
+    }
+}
