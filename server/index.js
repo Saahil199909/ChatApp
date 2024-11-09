@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userRouter = require('./Routes/userRouter')
+const chatRouter = require('./Routes/chatRouter')
 
 const app = express();
 require("dotenv").config();
@@ -9,6 +10,7 @@ require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 app.use('/api/users', userRouter)
+app.use('/api/chat', chatRouter)
 
 const port = process.env.PORT || 5000;
 const uri = 'mongodb://localhost:27017/chatRoom';
