@@ -22,13 +22,13 @@ const createOrGetChat = async(req, res) => {
 
 const createMessage = async(req, res) => {
     try{
-        const {chatId, senderId, message} = req.body
-        if (!chatId || !senderId || !message){
+        const {chatIdValue, senderId, message} = req.body
+        if (!chatIdValue || !senderId || !message){
             return res.status(400).json({ error: 'chatId, senderId, and message are required fields' })
         }
-        const createMessageObj = new messageModel({chatId: chatId, senderId: senderId, message: message})
+        const createMessageObj = new messageModel({chatId: chatIdValue, senderId: senderId, message: message})
         await createMessageObj.save()
-        return res.status(200).json({"msg":"message send succesfully"})
+        return res.status(200).json(createMessageObj)
     }catch(error){
         console.log(error)
         return res.status(500).json(error)

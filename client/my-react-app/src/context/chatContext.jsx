@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { baseurl, getApi, postApi } from "../utils/services";
 import { AuthContext } from "./AuthContext";
+// import { Socket } from "socket.io-client";
 
 export const chatContext = createContext();
 
@@ -12,7 +13,8 @@ export const ChatContextProvider = ({children}) => {
     const [selectedUserToChat, setSelectedUserToChat] = useState(null)
     const [chatId, setChatId] = useState(null)
     const [getAllMessages, setGetAllMessages] = useState(null)
-    const [message, setMessage] = useState(null)
+    const [message, setMessage] = useState('')
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     const getAllusers = async() => {
         const response = await getApi(`${baseurl}/users/`)
@@ -40,13 +42,16 @@ export const ChatContextProvider = ({children}) => {
     }
 
 
-    const sendmessage = async(chatId, senderId, message) => {
-        chatId = chatId._id
-        const response = await postApi(`${baseurl}/chat/createMessage`, {chatId, senderId, message})
+    const sendmessage = async(chatId, senderId, message, socket) => {
+        const chatIdValue = chatId._id
+        const recipientIdList = chatId.members.filter(memberId => memberId !== senderId)
+        const recipientId = recipientIdList[0]
+        const response = await postApi(`${baseurl}/chat/createMessage`, {chatIdValue, senderId, message})
         if(response.error){
             console.log(response.error)
         }else{
             setMessage('')
+            socket.emit('serverPrivateMessage', {recipientId, message: response.data})
         }
     } 
 
@@ -62,6 +67,7 @@ export const ChatContextProvider = ({children}) => {
             getAllMessages,
             chatId,
             message,
+            setGetAllMessages,
             getAllusers,
             funcShowChatBoxx,
             sendmessage,
@@ -70,4 +76,4 @@ export const ChatContextProvider = ({children}) => {
             {children}
         </chatContext.Provider>
     )
-}
+}   

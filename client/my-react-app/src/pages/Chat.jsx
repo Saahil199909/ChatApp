@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import ListUser from "../components/ListUser";
 import { chatContext } from "../context/chatContext";
 import { AuthContext } from "../context/AuthContext";
+import { io } from "socket.io-client";
 
 export default function Chat() {
   const {
@@ -11,16 +12,38 @@ export default function Chat() {
     funcShowChatBoxx,
     selectedUserToChat,
     getAllMessages,
+    setGetAllMessages,
     sendmessage,
     chatId,
     message,
-    updatemessage,
+    updatemessage
   } = useContext(chatContext);
   const { user } = useContext(AuthContext);
+  const socketRef = useRef(null);
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
     getAllusers();
-  }, []);
+
+    const socket = io("http://localhost:5000");
+    socketRef.current = socket;
+
+    socket.on("connect", () => {
+      console.log("Connected to socket server with ID:", socket.id); // socket.id is the unique identifier for the connection
+    });
+
+    socket.emit("join", user._id);
+
+    socket.on("clientPrivateMessage", ({ message }) => {
+      setGetAllMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [getAllMessages]);
 
   return (
     <div className="flex gap-16 m-8 h-full overflow-hidden">
@@ -66,6 +89,8 @@ export default function Chat() {
                     {message.message}
                   </p>
                 ))}
+              {/* Empty div to act as the scroll target */}
+              <div ref={messageEndRef} />
             </div>
           </div>
 
@@ -77,18 +102,18 @@ export default function Chat() {
               onChange={(e) => updatemessage(e.target.value)}
             ></textarea>
             <p>
-              {" "}
               <i
                 className="fa-solid fa-paper-plane text-4xl cursor-pointer"
-                onClick={() => sendmessage(chatId, user._id, message)}
-              ></i>{" "}
+                onClick={() =>
+                  sendmessage(chatId, user._id, message, socketRef.current)
+                }
+              ></i>
             </p>
             <p></p>
           </footer>
         </div>
       ) : (
         <p className="text-xl font-bold text-center w-2/3">
-          {" "}
           You have no active conversation....
         </p>
       )}
