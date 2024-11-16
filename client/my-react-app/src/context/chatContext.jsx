@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { baseurl, getApi, postApi } from "../utils/services";
 import { AuthContext } from "./AuthContext";
 // import { Socket } from "socket.io-client";
@@ -12,9 +12,12 @@ export const ChatContextProvider = ({children}) => {
     const [showChatBox, setShowChatBox] = useState(false)
     const [selectedUserToChat, setSelectedUserToChat] = useState(null)
     const [chatId, setChatId] = useState(null)
-    const [getAllMessages, setGetAllMessages] = useState(null)
+    const [getAllMessages, setGetAllMessages] = useState([])
     const [message, setMessage] = useState('')
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const timeoutRef = useRef(null)
+
+    // useEffect(() => { console.log(listusers, "::::::::::::::::::::::::::::::::::::::::::::::::::::;")})
 
     const getAllusers = async() => {
         const response = await getApi(`${baseurl}/users/`)
@@ -24,12 +27,13 @@ export const ChatContextProvider = ({children}) => {
         }
     }
 
-    const funcShowChatBoxx = async (selectedUser) => {
+    const funcShowChatBoxx = async (selectedUser, socket) => {
         const response = await postApi(`${baseurl}/chat/createChat/${selectedUser._id}/${user._id}`)
         if (response.error){
             console.log(response.error)
         }else{
             setChatId(response.data)
+            console.log(response.data, "CHAT_Id")
         }
         const getAllMessagesResponse = await getApi(`${baseurl}/chat/getAllMessages/${response.data._id}`)
         if(getAllMessagesResponse.error){
@@ -39,6 +43,8 @@ export const ChatContextProvider = ({children}) => {
         }
         setSelectedUserToChat(selectedUser)
         setShowChatBox(true)
+        socket.emit('markNotificationRead', user._id, selectedUser._id )
+        socket.emit('createActiveChats', user._id, response.data._id)
     }
 
 
@@ -51,12 +57,22 @@ export const ChatContextProvider = ({children}) => {
             console.log(response.error)
         }else{
             setMessage('')
-            socket.emit('serverPrivateMessage', {recipientId, message: response.data})
+            socket.emit('serverStopTyping', chatId, user._id)
+            socket.emit('serverPrivateMessage', {senderId, chatIdValue, recipientId, message: response.data})
         }
     } 
 
-    const updatemessage = (info) => {
+    const updatemessage = (info, socket, chatIdObj, userId) => {
         setMessage(info)
+        socket.emit('serverTyping', chatIdObj, userId)
+
+        if(timeoutRef.current){
+            clearTimeout(timeoutRef.current)
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            socket.emit('serverStopTyping', chatIdObj, userId)
+        }, 2000)
     }
 
     return(

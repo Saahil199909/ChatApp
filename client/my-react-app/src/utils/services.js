@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-export const baseurl = 'http://localhost:5000/api'
+export const baseurl = 'http://192.168.1.47:5000/api'
+// export const baseurl = 'http://192.168.0.106:5000/api'
 
 export const postApi = async(apiUrl, body) => {
     try{
