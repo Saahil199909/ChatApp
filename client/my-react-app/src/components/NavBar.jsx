@@ -48,6 +48,7 @@ export default function NavBar() {
           className="lg:hidden h-11 text-center px-4 mr-[0.1rem] bg-gray-700 text-slate-600 border border-white rounded-md bg-white text-[2rem]"
         >
           ☰
+          
         </button>
       </nav>
 
