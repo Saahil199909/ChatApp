@@ -17,8 +17,6 @@ export const ChatContextProvider = ({children}) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const timeoutRef = useRef(null)
 
-    // useEffect(() => { console.log(listusers, "::::::::::::::::::::::::::::::::::::::::::::::::::::;")})
-
     const getAllusers = async() => {
         const response = await getApi(`${baseurl}/users/`)
         if (response.error){
@@ -33,7 +31,6 @@ export const ChatContextProvider = ({children}) => {
             console.log(response.error)
         }else{
             setChatId(response.data)
-            console.log(response.data, "CHAT_Id")
         }
         const getAllMessagesResponse = await getApi(`${baseurl}/chat/getAllMessages/${response.data._id}`)
         if(getAllMessagesResponse.error){

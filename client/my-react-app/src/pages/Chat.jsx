@@ -33,7 +33,7 @@ export default function Chat() {
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("Connected to socket server with ID:", socket.id); // socket.id is the unique identifier for the connection
+      console.log("User connected Sucessfully to socker server")
     });
 
     socket.emit("join", user._id);
@@ -44,7 +44,6 @@ export default function Chat() {
     })
 
     socket.on("clientPrivateMessage", ({ message }) => {
-      console.log('client got hitted with message')
       setGetAllMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -70,10 +69,6 @@ export default function Chat() {
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [getAllMessages])
-
-  useEffect(() => {
-    console.log(showChatBox, "CCCCCCCCC")
-  })
 
   return (
     <div className="flex gap-16 m-8 h-full overflow-hidden">

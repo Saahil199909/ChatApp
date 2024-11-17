@@ -5,8 +5,6 @@ module.exports = function(io){
     const unreadNotifications = new Map();
 
     io.on('connection', (socket) => {
-        console.log("A user connected to socket server: ", socket.id)
-
         socket.on('join', (userId) => {
             users.set(userId, socket.id);
             const onlineUsers = Object.fromEntries(users);
@@ -21,7 +19,6 @@ module.exports = function(io){
         })
 
         socket.on('createActiveChats', (userId, chatId) => {
-            console.log("createActiveChat function has been called")
             activeChats.set(userId, chatId)
         })
 
@@ -40,7 +37,6 @@ module.exports = function(io){
         })
 
         socket.on('serverStopTyping', (chatIdObj, userId ) => {
-            console.log('server Stop typing functionm has been called')
             recipientId  = chatIdObj.members.filter(id => id != userId)[0];
             io.to(users.get(recipientId)).emit('clientStopTyping', userId)
         })
@@ -49,9 +45,6 @@ module.exports = function(io){
             const recipientSocketId =  users.get(recipientId);
             const recipientChatId = activeChats.get(recipientId)
             if(recipientChatId === chatIdValue && recipientSocketId){
-                console.log('MAIN if condition exceuted')
-                console.log(users, "Users object before sending message")
-                console.log(users.get(recipientId), "recipient socket id before sending message")
                 io.to(users.get(recipientId)).emit('clientPrivateMessage', {message})
                 io.to(socket.id).emit('clientPrivateMessage', {message})
             }else{
@@ -71,7 +64,6 @@ module.exports = function(io){
                     io.to(socket.id).emit('clientPrivateMessage', {message})
                 }else{
                     io.to(socket.id).emit('clientPrivateMessage', {message})
-                    console.log('RecipientID is not LoggedIN')
                 }
             }
         })
@@ -84,12 +76,10 @@ module.exports = function(io){
                     notificationList.splice(index, 1)
                     io.to(users.get(userId)).emit('clientUnreadNotifications', notificationList)
                 }
-                console.log(unreadNotifications, "unreadNotifications")
             }
         })
 
         socket.on('disconnect', () => {
-            console.log("User disconnected", socket.id);
             let disconnectUserId = null
             for(const [userId, socketId] of users.entries()){
                 if(socketId === socket.id){

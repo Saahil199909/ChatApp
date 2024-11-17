@@ -47,7 +47,6 @@ export const AuthContextProvider = ({children}) => {
             console.log(response, response.error)
             setRegsiterError(response.error)
         }else{
-            console.log("User created Succesfully", response.data)
             setRegsiterError('');
             setIsAccountCreated(true);
             localStorage.setItem('user', JSON.stringify(response.data));

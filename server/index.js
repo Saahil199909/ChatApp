@@ -15,9 +15,7 @@ const httpServer = http.createServer(app);
  // Create Socket.IO server and cors 
 const io = new Server(httpServer,{            
   cors: {
-    // origin: 'http://localhost:5173',
     origin: 'http://192.168.1.47:5173',
-    // origin: 'http://192.168.0.106:5173',
     methods: ['GET', 'POST'],
   }
 });  
@@ -30,20 +28,18 @@ app.use('/api/users', userRouter)
 app.use('/api/chat', chatRouter)
 
 const port = process.env.PORT || 5000;
-const uri = 'mongodb://localhost:27017/chatRoom';
-
-// httpServer.listen(port, '192.168.1.47', (req, res) => {
-//   console.log(`server running on port: ${port}`);
-// });
 
 httpServer.listen(port, '192.168.1.47', (req, res) => {
   console.log(`server running on port: ${port}`);
 });
 
-mongoose
-  .connect(uri)
-  .then(() => console.log(`MongoDB connection established succesfully`))
-  .catch((error) => console.log(`MongoDB connection FAILED: ${error.message}`));
+const uri = process.env.MONGODB_ATLAS_URI;
+mongoose.connect(uri, {
+  family: 4,
+})
+.then(() => console.log("MongoDB connected successfully"))
+.catch((error) => console.error("MongoDB connection error:", error));
+
 
 // Import socket events after setting up the server and routes
 require('../socket/socketController.js')(io);  
