@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const baseurl = 'http://192.168.1.47:5000/api'
+export const baseurl = 'https://chatapp-server-node.onrender.com/api'
 // export const baseurl = 'http://192.168.0.106:5000/api'
 
 export const postApi = async(apiUrl, body) => {

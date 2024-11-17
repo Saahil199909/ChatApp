@@ -28,7 +28,7 @@ export default function Chat() {
   useEffect(() => {
     getAllusers();
 
-    const socket = io("http://192.168.1.47:5000");
+    const socket = io("https://chatapp-server-node.onrender.com");
     // const socket = io("http://192.168.0.106:5000");
     socketRef.current = socket;
 
