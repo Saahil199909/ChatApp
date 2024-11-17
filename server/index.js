@@ -15,7 +15,8 @@ const httpServer = http.createServer(app);
  // Create Socket.IO server and cors 
 const io = new Server(httpServer,{            
   cors: {
-    origin: 'http://192.168.1.47:5173',
+    // origin: 'http://192.168.1.47:5173',
+    origin: 'https://chat-app-mern-cyan-eight.vercel.app',
     methods: ['GET', 'POST'],
   }
 });  
@@ -29,7 +30,7 @@ app.use('/api/chat', chatRouter)
 
 const port = process.env.PORT || 5000;
 
-httpServer.listen(port, '192.168.1.47', (req, res) => {
+httpServer.listen(port, (req, res) => {
   console.log(`server running on port: ${port}`);
 });
 
