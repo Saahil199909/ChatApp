@@ -42,5 +42,5 @@ mongoose.connect(uri, {
 
 
 // Import socket events after setting up the server and routes
-require('../socket/socketController.js')(io);  
+require('./socket/socketController.js')(io);  
 
