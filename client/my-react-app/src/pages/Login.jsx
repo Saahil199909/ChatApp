@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext'
 
 export default function Login() {
 
-  const {user, loginInfo, loginUser, updateLoginInfo, regsiterError} = useContext(AuthContext)
+  const {user, loginInfo, loginUser, loginLoading, updateLoginInfo, regsiterError} = useContext(AuthContext)
 
   return (
     <div className="flex flex-col gap-4 items-center m-[150px]">
@@ -14,7 +14,7 @@ export default function Login() {
           <input type="text" placeholder="Password" className="border rounded-md py-1 px-4 text-black" onChange={(e) => updateLoginInfo({
             ...loginInfo, password: e.target.value
           })} />
-        <button type='submit' className="bg-blue-800 border rounded-md py-1 px-2"> Login </button>
+        <button type='submit' className="bg-blue-800 border rounded-md py-1 px-2"> {loginLoading ? 'Loading...' : 'Login' }  </button>
 
         {/* showing this when any error while submitting form */}
         {regsiterError ? (

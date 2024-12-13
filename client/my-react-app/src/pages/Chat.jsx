@@ -8,6 +8,7 @@ export default function Chat() {
   const {
     getAllusers,
     listusers,
+    listUsersLoading,
     showChatBox,
     funcShowChatBoxx,
     selectedUserToChat,
@@ -74,7 +75,8 @@ export default function Chat() {
     <div className="flex gap-16 m-8 h-full overflow-hidden">
       <div className={`${showChatBox?'hidden':'flex'} sm:flex justify-center sm:justify-end w-full sm:w-1/3`}>
         <div className="w-3/4 h-18">
-          {listusers &&
+          { listUsersLoading ? (<h1 className="text-3xl"> Loading... </h1>  ) :
+            listusers &&
             listusers.map(
               (listuser) =>
                 user._id !== listuser._id && (

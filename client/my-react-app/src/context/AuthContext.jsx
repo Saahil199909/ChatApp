@@ -10,6 +10,7 @@ export const AuthContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [regsiterError, setRegsiterError] = useState(null);
     const [registerLoading, setRegisterLoading] = useState(null);
+    const [loginLoading, setLoginLoading] = useState(false)
     const [isAccountCreated, setIsAccountCreated] = useState(false);
     const [registerinfo, setRegisterInfo] = useState({
         name: '',
@@ -58,7 +59,9 @@ export const AuthContextProvider = ({children}) => {
     //calling login api
     const loginUser = async(e) => {
         e.preventDefault()
+        setLoginLoading(true)
         const response = await postApi(`${baseurl}/users/login`, loginInfo)
+        setLoginLoading(false)
         if (response.error){
             setRegsiterError(response.error)
         }else{
@@ -88,6 +91,7 @@ export const AuthContextProvider = ({children}) => {
             registerinfo,
             regsiterError,
             registerLoading,
+            loginLoading,
             isAccountCreated,
             loginInfo,
             updateLoginInfo,

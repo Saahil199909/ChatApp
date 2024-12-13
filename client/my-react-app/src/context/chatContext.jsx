@@ -9,6 +9,7 @@ export const ChatContextProvider = ({children}) => {
 
     const {user} = useContext(AuthContext)
     const [listusers, setListUsers] = useState(null)
+    const [listUsersLoading, setListUsersLoading] = useState(false)
     const [showChatBox, setShowChatBox] = useState(false)
     const [selectedUserToChat, setSelectedUserToChat] = useState(null)
     const [chatId, setChatId] = useState(null)
@@ -18,7 +19,9 @@ export const ChatContextProvider = ({children}) => {
     const timeoutRef = useRef(null)
 
     const getAllusers = async() => {
+        setListUsersLoading(true)
         const response = await getApi(`${baseurl}/users/`)
+        setListUsersLoading(false)
         if (response.error){
         }else{
             setListUsers(response.data)
@@ -76,6 +79,7 @@ export const ChatContextProvider = ({children}) => {
         <chatContext.Provider value={{
             showChatBox,
             listusers,
+            listUsersLoading,
             selectedUserToChat,
             getAllMessages,
             chatId,
